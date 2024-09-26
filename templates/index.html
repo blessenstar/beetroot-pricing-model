@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beetroot Price Prediction</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <style>
+        body {
+            background-image: url('{{ url_for('static', filename='beet.jpg') }}'); 
+            background-size: cover; 
+            background-repeat: no-repeat;
+            background-attachment: fixed; 
+            background-position: center;
+        }
+        .container {
+            background-color: rgba(255, 255, 255, 0.8); 
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-5">Beetroot Price Prediction</h1>
+        <form action="/predict" method="POST" class="mt-8">
+            <div class="form-group">
+                <label for="district">District Name:</label>
+                <select class="form-control" id="district" name="district" required>
+                    <option value="">Select District</option>
+                    <option value="Palakad">Palakad</option>
+                    <option value="Alappuzha">Alappuzha</option>
+                    <option value="Ernakulam">Ernakulam</option>
+                    <option value="Idukki">Idukki</option>
+                    <option value="Kasargod">Kasargod</option>
+                    <option value="Kollam">Kollam</option>
+                    <option value="Kottayam">Kottayam</option>
+                    <option value="Kozhikode(Calicut)">Kozhikode(Calicut)</option>
+                    <option value="Malappuram">Malappuram</option>
+                    <option value="Thirssur">Thirssur</option>
+                    <option value="Thiruvananthapuram">Thiruvananthapuram</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="market">Market Name:</label>
+                <select class="form-control" id="market" name="market" required>
+                    <option value="">Select Market</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="price_date">Select Month and Year:</label>
+                <input type="month" class="form-control" id="price_date" name="price_date" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Predict Price</button>
+        </form>
+
+        {% if prediction is not none %}
+            <h2 class="mt-4">Predicted Price: {{ prediction }} Rs./Quintal</h2>
+        {% endif %}
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        // Market data for each district
+        const marketData = {
+            "Palakad": ["Koduvayoor", "Palakkad", "Kollengode", "Pattambi", "vadakarapathy", "Vadakkenchery"],
+            "Alappuzha": ["Alappuzha", "Aroor", "Chengannur", "Cherthala", "Harippad", "Kayamkulam", "Madhavapuram", "Mannar"],
+            "Ernakulam": ["Angamaly", "Broadway market", "Moovattupuzha", "North Paravur", "Perumbavoor", "Piravam", "Thrippunithura", "Ernakulam"],
+            "Idukki": ["Adimali", "Vandiperiyar", "Munnar", "Nedumkandam", "Thodupuzha", "Vandiperiyar", "Kattappana"],
+            "Kasargod": ["Manjeswaram", "Neeleswaram"],
+            "Kollam": ["Anchal", "Chathanoor", "Kollam", "Kottarakkara", "Punalur"],
+            "Kottayam": ["Athirampuzha", "Ettumanoor", "Kanjirappally", "Kottayam", "Kuruppanthura", "Pala", "Thalayolaparambu"],
+            "Kozhikode(Calicut)": ["Kallachi", "Mukkom", "Palayam", "Perambra", "Quilandy", "Thamarassery"],
+            "Malappuram": ["Kondotty", "Kottakkal", "Manjeri", "Parappanangadi", "Thirurrangadi", "Perinthalmanna"],
+            "Thirssur": ["Chalakudy", "Chavakkad", "Irinjalakkuda", "Chelakkara", "Kodungalloor", "Thirssur", "Wadakkanchery"],
+            "Thiruvananthapuram": ["Vamanapuram", "Aralamoodu", "Chala", "Neyyatinkara", "Neyyattinkara VFPCK", "Parassala", "Pothencode", "Vamanapuram"]
+        };
+
+        // When district changes, update the market dropdown
+        document.getElementById('district').addEventListener('change', function() {
+            const district = this.value;
+            const marketSelect = document.getElementById('market');
+            
+            // Clear previous options
+            marketSelect.innerHTML = '<option value="">Select Market</option>';
+            
+            // Add markets for the selected district
+            if (marketData[district]) {
+                marketData[district].forEach(function(market) {
+                    const option = document.createElement('option');
+                    option.value = market;
+                    option.textContent = market;
+                    marketSelect.appendChild(option);
+                });
+            }
+        });
+    </script>
+</body>
+</html>
